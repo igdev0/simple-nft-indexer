@@ -2,9 +2,11 @@ import {Alchemy, Network, Nft, OwnedNftsResponse} from 'alchemy-sdk';
 import {useEffect, useState} from 'react';
 import "./app.css";
 import {useWalletStore} from './store/wallet';
+import ConnectWallet from './components/connect-wallet';
 
 function App() {
   const [userAddress, setUserAddress] = useState('');
+  const [err, setErr] = useState<string | null>();
   const [results, setResults] = useState<OwnedNftsResponse | []>([]);
   const [hasQueried, setHasQueried] = useState(false);
   const [tokenDataObjects, setTokenDataObjects] = useState<Nft[]>([]);
@@ -33,22 +35,19 @@ function App() {
     setHasQueried(true);
   }
 
-  const handleClick = () => {
-    console.log("Clicked");
-  };
-
   // Initialize wallet once is announced.
   useEffect(() => {
-    window.addEventListener("eip6963:announceProvider", walletStore.onAnnounceProvider as EventListener);
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
+    walletStore.init().catch(err => {
+      setErr(err.message);
+    })
     return () => {
-      window.removeEventListener("eip6963:announceProvider", walletStore.onAnnounceProvider as EventListener);
+      walletStore.cleanup();
     }
-  }, [])
+  }, []);
 
   return (
-      <div className="app">
-        <button className="btn btn--primary" onClick={handleClick}>Sign in with wallet</button>
+      <div className="app container mx-auto">
+        <ConnectWallet/>
       </div>
   );
 }

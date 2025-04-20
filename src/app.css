@@ -2,6 +2,6 @@
 @layer components {
     .app {
         @apply p-0 m-0 h-screen w-full;
-        @apply flex justify-center items-center;
+        /*@apply flex justify-center items-center;*/
     }
 }
