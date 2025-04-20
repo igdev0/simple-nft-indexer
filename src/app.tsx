@@ -1,11 +1,11 @@
-import { Alchemy, Network } from 'alchemy-sdk';
+import {Alchemy, Network, Nft, OwnedNftsResponse} from 'alchemy-sdk';
 import { useState } from 'react';
 
 function App() {
   const [userAddress, setUserAddress] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<OwnedNftsResponse | []>([]);
   const [hasQueried, setHasQueried] = useState(false);
-  const [tokenDataObjects, setTokenDataObjects] = useState([]);
+  const [tokenDataObjects, setTokenDataObjects] = useState<Nft[]>([]);
 
   async function getNFTsForOwner() {
     const config = {
