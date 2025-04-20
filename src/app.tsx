@@ -1,6 +1,6 @@
 import {Alchemy, Network, Nft, OwnedNftsResponse} from 'alchemy-sdk';
 import { useState } from 'react';
-
+import "./app.css"
 function App() {
   const [userAddress, setUserAddress] = useState('');
   const [results, setResults] = useState<OwnedNftsResponse | []>([]);
@@ -30,9 +30,14 @@ function App() {
     setTokenDataObjects(await Promise.all(tokenDataPromises));
     setHasQueried(true);
   }
-  return (
-    <div>
 
+  const handleClick = () => {
+    console.log("Clicked");
+  }
+
+  return (
+    <div className="app">
+      <button className="btn btn--primary" onClick={handleClick}>Sign in with wallet </button>
     </div>
   );
 }
