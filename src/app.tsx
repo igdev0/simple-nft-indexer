@@ -21,7 +21,7 @@ function App() {
   return (
       <div className="app container mx-auto">
         <ErrorMessage message={err}/>
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end py-2">
           <ConnectWallet/>
         </div>
         <Nfts/>
