@@ -1,40 +1,13 @@
-import {Alchemy, Network, Nft, OwnedNftsResponse} from 'alchemy-sdk';
 import {useEffect, useState} from 'react';
 import "./app.css";
 import {useWalletStore} from './store/wallet';
 import ConnectWallet from './components/connect-wallet';
+import Nfts from './components/nfts';
+import ErrorMessage from './components/error-message';
 
 function App() {
-  const [userAddress, setUserAddress] = useState('');
-  const [err, setErr] = useState<string | null>();
-  const [results, setResults] = useState<OwnedNftsResponse | []>([]);
-  const [hasQueried, setHasQueried] = useState(false);
-  const [tokenDataObjects, setTokenDataObjects] = useState<Nft[]>([]);
-  const walletStore = useWalletStore()
-  async function getNFTsForOwner() {
-    const config = {
-      apiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
-      network: Network.ETH_MAINNET,
-    };
-
-    const alchemy = new Alchemy(config);
-    const data = await alchemy.nft.getNftsForOwner(userAddress);
-    setResults(data);
-
-    const tokenDataPromises = [];
-
-    for (let i = 0; i < data.ownedNfts.length; i++) {
-      const tokenData = alchemy.nft.getNftMetadata(
-          data.ownedNfts[i].contract.address,
-          data.ownedNfts[i].tokenId
-      );
-      tokenDataPromises.push(tokenData);
-    }
-
-    setTokenDataObjects(await Promise.all(tokenDataPromises));
-    setHasQueried(true);
-  }
-
+  const [err, setErr] = useState<string | null>(null);
+  const walletStore = useWalletStore();
   // Initialize wallet once is announced.
   useEffect(() => {
     walletStore.init().catch(err => {
@@ -47,7 +20,9 @@ function App() {
 
   return (
       <div className="app container mx-auto">
+        <ErrorMessage message={err}/>
         <ConnectWallet/>
+        <Nfts/>
       </div>
   );
 }
