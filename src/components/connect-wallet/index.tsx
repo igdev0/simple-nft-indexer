@@ -18,8 +18,8 @@ export default function ConnectWallet() {
 
   return (
       <>
-        {walletStore.authenticated ? <button className="btn btn-primary" onClick={walletStore.logout}>Disconnect {truncateAddress(walletStore.accounts[0])} </button> :
-            <button className="btn btn-primary" onClick={togglePopup}>Connect Wallet</button>}
+        {walletStore.authenticated ? <button className="btn btn--primary flex gap-2" onClick={walletStore.logout}><img src={walletStore.currentProvider?.metadata.icon??""} alt="wallet icon" width={20} height={20}/> Disconnect {truncateAddress(walletStore.accounts[0])} </button> :
+            <button className="btn btn--primary" onClick={togglePopup}>Connect Wallet</button>}
         <div
             className={`fixed w-full h-full bg-white/85 z-10 top-0 left-0 flex justify-center items-center flex-col transition-all ${providersVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
           <div className="max-w-[600] mx-auto relative p-2">
