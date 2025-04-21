@@ -9,6 +9,11 @@
         @apply bg-blue-400 hover:bg-blue-500 text-white;
     }
 
+
+    .btn--outline {
+        @apply border-blue-400 hover:border-blue-500 border-1 text-blue-500;
+    }
+
     .btn--pill {
         @apply rounded-3xl;
     }

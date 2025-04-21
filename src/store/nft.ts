@@ -1,5 +1,5 @@
 import {create} from 'zustand/react';
-import {Alchemy, Network, Nft} from 'alchemy-sdk';
+import {Alchemy, Network, Nft, OwnedNft} from 'alchemy-sdk';
 import axios from 'axios';
 
 const config = {
@@ -7,45 +7,60 @@ const config = {
   network: Network.ETH_MAINNET,
 };
 
-const alchemy = new Alchemy(config);
+export const alchemy = new Alchemy(config);
+
 interface NftStore {
   loading: boolean,
-  ownedTokens: Nft[],
+  account: string | null,
+  tokens: Nft[],
   getOwnedNFTs: (owner: string) => Promise<void>,
   clear: () => void;
 }
+
 // web
 export const useNFTStore = create<NftStore>((setState, getState, store) => ({
   loading: false,
-  ownedTokens: [],
+  tokens: [],
+  account: null,
   async getOwnedNFTs(account) {
-    setState({loading: true});
-    const ownedNftsResponse = await alchemy.nft.getNftsForOwner(account);
-    const tokenDataPromises = ownedNftsResponse.ownedNfts.map((nft) => (
-        alchemy.nft.getNftMetadata(
-            nft.contract.address,
-            nft.tokenId,
-        )
-    ));
+    setState({loading: true, account});
+    let tokenDataPromises:Promise<Nft>[];
+
+    try {
+      const ownedNftsResponse = await alchemy.nft.getNftsForOwner(account);
+       tokenDataPromises = ownedNftsResponse.ownedNfts.map((nft) => (
+          alchemy.nft.getNftMetadata(
+              nft.contract.address,
+              nft.tokenId,
+          )
+      ));
+
+    } catch (err) {
+      return setState({loading: false});
+    }
 
     const nftData = await Promise.all(tokenDataPromises);
-    let results:Nft[] = [];
+    let results: Nft[] = [];
 
     for (let nft of nftData) {
-      if(nft.raw.error) {
-        const {data} = await axios.get(`https://alchemy.mypinata.cloud/ipfs/${nft.tokenUri?.split("/").at(-1)}`)
-        nft.name = data.name;
-        nft.image.thumbnailUrl = `https://alchemy.mypinata.cloud/ipfs/${data.image.split('/').at(-1)}`
-        results.push(nft);
-        continue;
+      if (nft.raw.error) {
+        try {
+          let ipfsHash = nft.tokenUri?.split("/").at(-1);
+          const {data} = await axios.get(`https://alchemy.mypinata.cloud/ipfs/${ipfsHash}`);
+          ipfsHash = data.image.split('/').at(-1);
+          nft.name = data.name;
+          nft.raw.metadata.image = `https://alchemy.mypinata.cloud/ipfs/${ipfsHash}`;
+          results.push(nft);
+        } catch (err) {
+          console.error(`${(err as Error).message}`)
+        }
       }
       results.push(nft);
     }
-    console.log(results)
 
-    setState({ownedTokens: results, loading: false});
+    setState({tokens: results, loading: false});
   },
   clear() {
-    setState({ownedTokens: [], loading: false});
+    setState({tokens: [], loading: false});
   }
 }));
