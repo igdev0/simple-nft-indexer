@@ -1,6 +1,5 @@
 import {create} from 'zustand/react';
 import {Alchemy, Network, Nft} from 'alchemy-sdk';
-import {useWalletStore} from './wallet';
 
 const config = {
   apiKey: import.meta.env.VITE_ALCHEMY_API_KEY,
