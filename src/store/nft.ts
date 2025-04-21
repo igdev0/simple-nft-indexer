@@ -62,6 +62,6 @@ export const useNFTStore = create<NftStore>((setState, getState, store) => ({
     setState({tokens: results, loading: false});
   },
   clear() {
-    setState({tokens: [], loading: false});
+    setState({tokens: [], loading: false, account: null});
   }
 }));
