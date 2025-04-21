@@ -15,9 +15,9 @@ function NFTGrid({tokens, initial}: {tokens: Nft[], initial: boolean}) {
   return (
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
         {
-          tokens.map(token => (
-              <div key={token.tokenId} className="border-1 border-blue-100 shadow-2xl p-2">
-                <img src={token.image.thumbnailUrl} alt={token.name} className="w-full"/>
+          tokens.map((token, index) => (
+              <div key={index} className="border-1 border-blue-100 shadow-2xl p-2">
+                <img src={token.image.thumbnailUrl ?? token.raw.metadata.image ?? "no-image"} alt={token.name} className="w-full"/>
                 <div className="pt-2">
                   <p><strong>{token.collection?.name}</strong> / {token.name}</p>
                   <p><strong>Token type</strong>: {token.contract.tokenType}</p>
@@ -88,7 +88,7 @@ export default function Nfts() {
       <>
         <ErrorMessage message={err}/>
         <h1 className="text-4xl font-extrabold mb-4">Your owned tokens</h1>
-        <NFTGrid tokens={store.tokens} initial={!store.account}/>
+        {store.loading ? <h1>Loading ...</h1> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
       </>
   );
 }

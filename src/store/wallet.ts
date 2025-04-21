@@ -140,12 +140,12 @@ export const useWalletStore = create<WalletStore>((setState, getState, store) =>
       method: "eth_requestAccounts",
       params: []
     });
-    setState(prevState => {
-      prevState.currentProvider = providerWithMeta;
-      prevState.accounts = accounts as string[];
-      prevState.authenticated = true;
-      return prevState;
-    });
+
+    setState({
+      currentProvider: providerWithMeta,
+      accounts: accounts as string[],
+      authenticated: true
+    })
   },
   onAnnounceProvider(provider) {
     setState((prevState) => {
