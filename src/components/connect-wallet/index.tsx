@@ -25,11 +25,11 @@ export default function ConnectWallet() {
           <div className="max-w-[600] mx-auto relative p-2">
             <button className="text-4xl absolute -top-4 -right-4 cursor-pointer" onClick={togglePopup}>&times;</button>
             <h1 className="text-3xl mb-2">Choose wallet provider</h1>
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center flex-col gap-2">
               {
                 [...walletStore.providers].map(([key, item]) => {
                   return (
-                      <button key={key} className="btn btn--primary flex gap-2" onClick={onAuth(item.metadata.name)}>
+                      <button key={key} className="btn btn--outline flex gap-2 w-full" onClick={onAuth(item.metadata.name)}>
                         <img src={item.metadata.icon} alt={item.metadata.name} width={30} height={30}/>
                         {item.metadata.name}
                       </button>
