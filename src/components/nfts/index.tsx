@@ -5,6 +5,7 @@ import {truncateAddress} from '../../../utils/functions';
 import {Nft} from 'alchemy-sdk';
 import {ethers} from 'ethers';
 import {useErrorStore} from '../../store/error';
+import LoadingSpinner from '../loading-spinner';
 
 function NFTGrid({tokens, initial}: {tokens: Nft[], initial: boolean}) {
   if(!initial && !tokens.length) {
@@ -78,7 +79,7 @@ export default function Nfts() {
             <input className="border-1 border-blue-100 w-full block p-2 outline-none" type="text" placeholder="e.g: 0x1D790d6D38a5ADB6312E86b8cCC365100f7d3F89" name="address"/>
             <button className="btn btn--outline">Get</button>
           </form>
-          {store.loading ? <h1> Loading ...</h1> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
+          {store.loading ? <LoadingSpinner/> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
         </div>
         </>
     );
@@ -88,7 +89,7 @@ export default function Nfts() {
   return (
       <>
         <h1 className="text-4xl font-extrabold mb-4">Your owned tokens</h1>
-        {store.loading ? <h1>Loading ...</h1> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
+        {store.loading ? <LoadingSpinner/> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
       </>
   );
 }
