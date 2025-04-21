@@ -74,8 +74,8 @@ export default function Nfts() {
         <div className="flex justify-center items-center mt-40 flex-col">
           <h1 className="font-extrabold text-5xl text-center">Sign in to see<br/> Your owned NFTs</h1>
           <p className="text-2xl text-center">Or <br/>Type in the owner address</p>
-          <form action={searchOwned} className="max-w-[400px] w-full my-4 flex gap-2">
-            <input className="border-1 border-blue-100 w-full block p-2 outline-none" type="text" placeholder="e.g: 0x00000000000" name="address"/>
+          <form action={searchOwned} className="max-w-[510px] w-full my-4 flex gap-2">
+            <input className="border-1 border-blue-100 w-full block p-2 outline-none" type="text" placeholder="e.g: 0x1D790d6D38a5ADB6312E86b8cCC365100f7d3F89" name="address"/>
             <button className="btn btn--outline">Get</button>
           </form>
           {store.loading ? <h1> Loading ...</h1> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
