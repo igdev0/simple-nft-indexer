@@ -51,6 +51,7 @@ export const useNFTStore = create<NftStore>((setState, getState, store) => ({
           nft.name = data.name;
           nft.raw.metadata.image = `https://alchemy.mypinata.cloud/ipfs/${ipfsHash}`;
           results.push(nft);
+          continue;
         } catch (err) {
           console.error(`${(err as Error).message}`)
         }
