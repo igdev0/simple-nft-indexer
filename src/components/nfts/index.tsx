@@ -1,10 +1,10 @@
 import {alchemy, useNFTStore} from '../../store/nft';
 import {useWalletStore} from '../../store/wallet';
-import {useEffect, useState} from 'react';
-import ErrorMessage from '../error-message';
+import {useEffect} from 'react';
 import {truncateAddress} from '../../../utils/functions';
 import {Nft} from 'alchemy-sdk';
 import {ethers} from 'ethers';
+import {useErrorStore} from '../../store/error';
 
 function NFTGrid({tokens, initial}: {tokens: Nft[], initial: boolean}) {
   if(!initial && !tokens.length) {
@@ -33,43 +33,44 @@ function NFTGrid({tokens, initial}: {tokens: Nft[], initial: boolean}) {
 
 export default function Nfts() {
   const [account] = useWalletStore().accounts;
+
   const authenticated = useWalletStore().authenticated;
-  const [err, setErr] = useState<null | string>(null);
+  const {pushError} = useErrorStore();
   const store = useNFTStore();
 
   const searchOwned = async (formData: FormData) => {
     let address = formData.get("address") as string | null;
     if (!address) {
-      setErr("Address is required");
+      pushError("Address is required");
       return;
     }
 
     if (!ethers.isAddress(address)) {
         const addr = await alchemy.core.resolveName(address);
         if(!addr) {
-          return setErr("Wasn't able to resolve ENS");
+          return pushError("Wasn't able to resolve ENS");
         }
     }
 
     if (!address) {
-      return setErr("Address is not valid");
+      return pushError("Address is not valid");
     }
 
-    store.getOwnedNFTs(address).catch(err => setErr(err.message));
+    store.getOwnedNFTs(address).catch(err => pushError(err.message));
   };
 
   useEffect(() => {
     if (authenticated) {
-      store.getOwnedNFTs(account).catch(v => setErr(v.message));
+      store.getOwnedNFTs(account).catch(v => pushError(v.message));
     } else {
       store.clear();
     }
+
   }, [authenticated]);
 
   if (!authenticated) {
     return (
         <>
-          <ErrorMessage message={err}/>
         <div className="flex justify-center items-center mt-40 flex-col">
           <h1 className="font-extrabold text-5xl text-center">Sign in to see<br/> Your owned NFTs</h1>
           <p className="text-2xl text-center">Or <br/>Type in the owner address</p>
@@ -86,7 +87,6 @@ export default function Nfts() {
 
   return (
       <>
-        <ErrorMessage message={err}/>
         <h1 className="text-4xl font-extrabold mb-4">Your owned tokens</h1>
         {store.loading ? <h1>Loading ...</h1> : <NFTGrid tokens={store.tokens} initial={!store.account}/>}
       </>
