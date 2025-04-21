@@ -19,7 +19,6 @@ export const useNFTStore = create<NftStore>((setState, getState, store) => ({
   ownedTokens: [],
   async getOwnedNFTs(account) {
     setState({loading: true});
-
     const ownedNftsResponse = await alchemy.nft.getNftsForOwner(account);
     const tokenDataPromises = ownedNftsResponse.ownedNfts.map((nft) => (
         alchemy.nft.getNftMetadata(
@@ -27,7 +26,6 @@ export const useNFTStore = create<NftStore>((setState, getState, store) => ({
             nft.tokenId
         )
     ));
-
 
     setState({ownedTokens: await Promise.all(tokenDataPromises), loading: false});
   },
